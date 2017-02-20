@@ -1,0 +1,36 @@
+body { font: 12px Arial;}
+
+.container {
+	min-width: 800px;
+	max-width: 1200px;
+	margin: 20px auto;
+}
+
+.axis path, .axis line {
+	fill: none;
+	stroke: grey;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
+
+.urinate {
+	stroke: #417FC9;
+	stroke-width: 2;
+	fill: none;
+}
+
+.stool {
+	stroke: #947A5E;
+	stroke-width: 2;
+	fill: none;
+}
+
+.grid .tick {
+	stroke: lightgrey;
+	stroke-opacity: 0.7;
+	shape-rendering: crispEdges;
+}
+
+.grid path {
+	stroke-width: 0;
+}
