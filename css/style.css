@@ -25,12 +25,6 @@ body { font: 12px Arial;}
 	fill: none;
 }
 
-.grid .tick {
-	stroke: lightgrey;
-	stroke-opacity: 0.7;
-	shape-rendering: crispEdges;
-}
-
-.grid path {
-	stroke-width: 0;
+.tick line{
+    opacity: 0.3;
 }

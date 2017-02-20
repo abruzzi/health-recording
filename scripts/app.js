@@ -13,41 +13,34 @@ var x = d3.time.scale().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 
 var xAxis = d3.svg.axis().scale(x)
-	.orient("bottom").ticks(10);
+	.orient("bottom")
+	.innerTickSize(-height)
+    .outerTickSize(0)
+    .tickPadding(10);
 
 var yAxis = d3.svg.axis().scale(y)
-	.orient("left").ticks(10);
+	.orient("left")
+	.innerTickSize(-width)
+    .outerTickSize(0)
+    .tickPadding(10);
 
 var valueline = d3.svg.line()
-.interpolate('basis')
-.x(function(d) {
-	return x(d.date);
-})
-.y(function(d) {
-	return y(d.urinate);
-});
+	.interpolate('basis')
+	.x(function(d) {
+		return x(d.date);
+	})
+	.y(function(d) {
+		return y(d.urinate);
+	});
 
 var stoolline = d3.svg.line()
-.interpolate('basis')
-.x(function(d) {
-	return x(d.date);
-})
-.y(function(d) {
-	return y(d.stool);
-});
-
-
-function make_x_axis() { return d3.svg.axis()
-        .scale(x)
-        .orient("bottom")
-        .ticks(10)
-}
-
-function make_y_axis() { return d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .ticks(10)
-}
+	.interpolate('basis')
+	.x(function(d) {
+		return x(d.date);
+	})
+	.y(function(d) {
+		return y(d.stool);
+	});
 
 var svg = d3.select(".container").append("svg")
 	.attr("width", width + margin.left + margin.right)
@@ -73,14 +66,6 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	y.domain([0, d3.max(data, function(d) {
 		return d.urinate;
 	})]);
-	
-	svg.append("path") // Add the valueline path. 
-		.attr("class", "urinate")
-		.attr("d", valueline(data));
-	
-	svg.append("path")
-		.attr("class", "stool")
-		.attr("d", stoolline(data));
 
 	svg.append("g") // Add the X Axis 
 		.attr("class", "x axis")
@@ -89,12 +74,6 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	svg.append("g") // Add the Y Axis 
 		.attr("class", "y axis")
 		.call(yAxis);
-
-	// svg.append("text")
-	// 	.attr("x", width / 2 )
- //        .attr("y", height + margin.bottom )
- //        .style("text-anchor", "middle")
- //        .text("Date");
 
  	svg.append("text")
         .attr("transform", "rotate(-90)")
@@ -111,20 +90,34 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .style("text-decoration", "underline")
-        .text("邱心月换尿布记录");
+        .text("邱心月换尿布记录"); 
 
 
-    svg.append("g")
-        .attr("class", "grid")
-        .attr("transform", "translate(0," + height + ")")
-        .call(make_x_axis()
-            .tickSize(-height, 0, 0)
-            .tickFormat("")
-        )
-    svg.append("g")
-        .attr("class", "grid")
-        .call(make_y_axis()
-            .tickSize(-width, 0, 0)
-            .tickFormat("")
-        )        
+	svg.selectAll("dot")
+	    .data(data)
+	  .enter().append("circle")
+	  	.attr('stroke', '#417FC9')
+	  	.attr('fill', 'none')
+	    .attr("r", 3.0)
+	    .attr("cx", function(d) { return x(d.date); })
+	    .attr("cy", function(d) { return y(d.urinate); });
+
+	svg.selectAll("dot")
+	    .data(data)
+	  .enter().append("rect")
+	  	.attr('stroke', '#947A5E')
+	  	.attr('fill', 'none')
+	  	.attr('width', 3.0)
+	  	.attr('height', 3.0)
+	    .attr("x", function(d) { return x(d.date); })
+	    .attr("y", function(d) { return y(d.stool); });
+
+	svg.append("path")
+		.attr("class", "urinate")
+		.attr("d", valueline(data));
+	
+	svg.append("path")
+		.attr("class", "stool")
+		.attr("d", stoolline(data));
+
 });
