@@ -28,3 +28,16 @@ body { font: 12px Arial;}
 .tick line{
     opacity: 0.3;
 }
+
+div.tooltip {
+	position: absolute;
+	text-align: center;
+	width: 160px;
+	height: 20px;
+	padding: 2px;
+	font: 12px Arial;
+	background: #417FC9;
+	color: white;
+	border: 0px;
+	pointer-events: none;
+}

@@ -49,6 +49,9 @@ var svg = d3.select(".container").append("svg")
 	.attr("transform",
 		"translate(" + margin.left + "," + margin.top + ")");
 
+
+var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
+
 // Get the data
 d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	
@@ -92,6 +95,10 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
         .style("text-decoration", "underline")
         .text("邱心月换尿布记录"); 
 
+    function formatTime(date) {
+    	var format = d3.time.format("%Y-%m-%d");
+    	return format(date);
+    }
 
 	svg.selectAll("dot")
 	    .data(data)
@@ -100,7 +107,16 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	  	.attr('fill', 'none')
 	    .attr("r", 3.0)
 	    .attr("cx", function(d) { return x(d.date); })
-	    .attr("cy", function(d) { return y(d.urinate); });
+	    .attr("cy", function(d) { return y(d.urinate); })
+	    .on("mouseover", function(d) {
+			div.html(formatTime(d.date) + ", 嘘嘘: "  + d.urinate + "次")
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY - 28) + "px")
+			.style("opacity", .9);
+		})
+		.on("mouseout", function(d) { 
+			div.style("opacity", 0);
+		});
 
 	svg.selectAll("dot")
 	    .data(data)
