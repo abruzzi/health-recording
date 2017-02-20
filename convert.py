@@ -21,6 +21,16 @@ diaper = pd.concat([diaper, converted], axis=1)
 grouped = diaper.groupby(pd.TimeGrouper('D'))
 
 result = grouped.aggregate(np.sum)
+result.to_csv('data/diaper_normolized.csv')
 
 
 # g = diaper.groupby(pd.DatetimeIndex(diaper['date']).normalize())
+
+sleeping = pd.read_csv('data/sleeping_data.csv', usecols=['date', 'length'])
+sleeping['date'] = pd.to_datetime(sleeping['date'], format="%Y/%m/%d %H:%M")
+sleeping.index = sleeping['date']
+
+grouped = sleeping.groupby(pd.TimeGrouper('D'))
+result = grouped.aggregate(np.sum)
+
+result.to_csv('data/sleeping_normolized.csv')

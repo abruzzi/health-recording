@@ -112,7 +112,8 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 			div.html(formatTime(d.date) + ", 嘘嘘: "  + d.urinate + "次")
 			.style("left", (d3.event.pageX) + "px")
 			.style("top", (d3.event.pageY - 28) + "px")
-			.style("opacity", .9);
+			.style("opacity", .9)
+			.style("background", "#417FC9");
 		})
 		.on("mouseout", function(d) { 
 			div.style("opacity", 0);
@@ -123,10 +124,20 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	  .enter().append("rect")
 	  	.attr('stroke', '#947A5E')
 	  	.attr('fill', 'none')
-	  	.attr('width', 3.0)
-	  	.attr('height', 3.0)
+	  	.attr('width', 4.0)
+	  	.attr('height', 4.0)
 	    .attr("x", function(d) { return x(d.date); })
-	    .attr("y", function(d) { return y(d.stool); });
+	    .attr("y", function(d) { return y(d.stool); })
+	    .on("mouseover", function(d) {
+			div.html(formatTime(d.date) + ", 便便: "  + d.stool + "次")
+			.style("left", (d3.event.pageX) + "px")
+			.style("top", (d3.event.pageY - 28) + "px")
+			.style("opacity", .9)
+			.style("background", "#947A5E");
+		})
+		.on("mouseout", function(d) { 
+			div.style("opacity", 0);
+		});;
 
 	svg.append("path")
 		.attr("class", "urinate")

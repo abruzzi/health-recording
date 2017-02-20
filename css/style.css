@@ -15,13 +15,13 @@ body { font: 12px Arial;}
 
 .urinate {
 	stroke: #417FC9;
-	stroke-width: 2;
+	stroke-width: 1.5;
 	fill: none;
 }
 
 .stool {
 	stroke: #947A5E;
-	stroke-width: 2;
+	stroke-width: 1.5;
 	fill: none;
 }
 
