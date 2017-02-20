@@ -104,8 +104,9 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	    .data(data)
 	  .enter().append("circle")
 	  	.attr('stroke', '#417FC9')
-	  	.attr('fill', 'none')
-	    .attr("r", 3.0)
+	  	.attr('fill', '#417FC9')
+	  	.attr('opacity', '.7')
+	    .attr("r", function(d) {return d.urinate;})
 	    .attr("cx", function(d) { return x(d.date); })
 	    .attr("cy", function(d) { return y(d.urinate); })
 	    .on("mouseover", function(d) {
@@ -123,9 +124,10 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 	    .data(data)
 	  .enter().append("rect")
 	  	.attr('stroke', '#947A5E')
-	  	.attr('fill', 'none')
-	  	.attr('width', 4.0)
-	  	.attr('height', 4.0)
+	  	.attr('fill', '#947A5E')
+	  	.attr('opacity', '.7')
+	  	.attr('width', function(d) {return 1.5 * d.stool;})
+	  	.attr('height', function(d) {return 1.5 * d.stool;})
 	    .attr("x", function(d) { return x(d.date); })
 	    .attr("y", function(d) { return y(d.stool); })
 	    .on("mouseover", function(d) {
@@ -139,12 +141,12 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 			div.style("opacity", 0);
 		});;
 
-	svg.append("path")
-		.attr("class", "urinate")
-		.attr("d", valueline(data));
+	// svg.append("path")
+	// 	.attr("class", "urinate")
+	// 	.attr("d", valueline(data));
 	
-	svg.append("path")
-		.attr("class", "stool")
-		.attr("d", stoolline(data));
+	// svg.append("path")
+	// 	.attr("class", "stool")
+	// 	.attr("d", stoolline(data));
 
 });

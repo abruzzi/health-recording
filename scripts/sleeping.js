@@ -3,7 +3,7 @@ var parseDate = d3.time.format("%Y-%m-%d").parse;
 d3.csv("data/sleeping_normolized.csv", function(e, data) {
 	data.forEach(function(d) {
 		d.date = parseDate(d.date);
-		d.count = +d.length/60;
+		d.count = +(+d.length/60).toFixed(2);
 	});
 
 	var chart = calendarHeatmap()
