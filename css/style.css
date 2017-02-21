@@ -59,3 +59,33 @@ div.tooltip {
 	stroke-width: 0;
 	opacity: .7;	
 }
+
+.barbg {
+	fill: #efefef;
+	stroke-width: 0;
+	opacity: .7;
+}
+
+.low {
+	fill: #f9d057;
+}
+
+.fine {
+	fill: #ffff8c;
+}
+
+.medium {
+	fill: #90eb9d;
+}
+
+.good {
+	fill: #00ccbc;
+}
+
+.great {
+	fill: #00a6ca;
+}
+
+.prefect {
+	fill: #2c7bb6;
+}
