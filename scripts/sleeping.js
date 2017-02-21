@@ -1,5 +1,5 @@
 var margin = {
-	top: 20, left: 50, right: 20, bottom: 20
+	top: 20, left: 50, right: 20, bottom: 60
 };
 
 var width = 800 - margin.left - margin.right;
@@ -24,6 +24,12 @@ var xAxis = d3.svg.axis()
     .orient("bottom")
     .tickFormat(d3.time.format("%Y/%m/%d"));
 
+var yScaleRight = d3.scale.linear().range([height, 0]);
+var yAxisRight = d3.svg.axis()
+	.scale(yScaleRight)
+	.orient("left")
+	.ticks(5);
+
 var tickArray = yScale.ticks(24),
   tickDistance = yScale(tickArray[tickArray.length - 1]) - yScale(tickArray[tickArray.length - 2]);
 
@@ -37,11 +43,15 @@ var svg = d3.select(".container").append("svg")
 		"translate(" + margin.left + "," + margin.top + ")");
 
 d3.csv('data/sleeping_data.csv', function(e, data) {
-	// data = _.take(data, 50);
+	// data = _.take(data, 20);
 	data.forEach(function(d) {
 		d.date = parseDate(d.date);
 		d.length = d.length;
 	});
+
+	yScaleRight.domain([0, d3.max(data, function(d) {
+		return Math.max(d.length);
+	})]);
 
 	// Scale the range of the data
 	xScale.domain(d3.extent(data, function(d) {
@@ -55,7 +65,6 @@ d3.csv('data/sleeping_data.csv', function(e, data) {
 
 	xScale.domain(dateRange.map(function(d) { return d.date; }));
 
-
 	function getFirstInDomain(date) {
 		var domain = xScale.domain();
 
@@ -67,6 +76,7 @@ d3.csv('data/sleeping_data.csv', function(e, data) {
 
 		return domain[index];
 	}
+
 	//draw the axis
 	svg.append("g")
 		.attr("class", "y axis")
@@ -125,6 +135,14 @@ d3.csv('data/sleeping_data.csv', function(e, data) {
 		  return offset * tickDistance;
 		});
 
+	var valueline = d3.svg.line()
+		.x(function(d) { 
+			var m = getFirstInDomain(d.date);
+			return xScale(m) + margin.left; 
+		})
+		.y(function(d) { 
+			return yScaleRight(d.length); 
+		});
 
 	svg.append("g")
 	  .attr("class", "x axis")
@@ -134,5 +152,30 @@ d3.csv('data/sleeping_data.csv', function(e, data) {
 	  .style("text-anchor", "end")
 	  .attr("dx", "-.8em")
 	  .attr("dy", "-.55em")
-	  .attr("transform", "rotate(-45)");		
+	  .attr("transform", "rotate(-45)");
+
+	 svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + (width + margin.right) + ", " +margin.top +")")
+        .style("fill", "red")
+        .call(yAxisRight);
+
+
+	svg.selectAll("dot")
+	    .data(data)
+	  .enter().append("rect")
+	  	.attr('stroke', '#636363')
+	  	.attr('fill', '#636363')
+	  	.attr('opacity', .2)
+	  	.attr('width', function(d) {return d.length;})
+	  	.attr('height', function(d) {return d.length;})
+	    .attr("x", function(d) { 
+	    	var m = getFirstInDomain(d.date);
+			return xScale(m) + margin.left;
+	    })
+	    .attr("y", function(d) { return yScaleRight(d.length); })
+
+	// svg.append("path")
+	// 	.attr("d", valueline(data));
+
 });
