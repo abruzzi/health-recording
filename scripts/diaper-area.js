@@ -24,7 +24,7 @@ var yAxis = d3.svg.axis().scale(y)
     .outerTickSize(0)
     .tickPadding(10);
 
-var valueline = d3.svg.line()
+var urinateline = d3.svg.line()
 	.interpolate('basis')
 	.x(function(d) {
 		return x(d.date);
@@ -41,6 +41,18 @@ var stoolline = d3.svg.line()
 	.y(function(d) {
 		return y(d.stool);
 	});
+
+var areaUrinate = d3.svg.area()
+	.interpolate('basis')
+	.x(function(d) { return x(d.date); }) 
+	.y0(height)
+	.y1(function(d) { return y(d.urinate); });
+
+var areaStool = d3.svg.area()
+	.interpolate('basis')
+	.x(function(d) { return x(d.date); }) 
+	.y0(height)
+	.y1(function(d) { return y(d.stool); });
 
 var svg = d3.select(".container").append("svg")
 	.attr("width", width + margin.left + margin.right)
@@ -70,6 +82,7 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 		return d.urinate;
 	})]);
 
+
 	svg.append("g") // Add the X Axis 
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + height + ")").call(xAxis);
@@ -84,8 +97,7 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
         .attr("x",0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Times");    
-
+        .text("Times");
 
     svg.append("text")
         .attr("x", (width / 2))
@@ -95,58 +107,23 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
         .style("text-decoration", "underline")
         .text("邱心月换尿布记录"); 
 
-    function formatTime(date) {
-    	var format = d3.time.format("%Y-%m-%d");
-    	return format(date);
-    }
+	svg.append("path")
+        .datum(data)
+        .attr("class", "areaUrinate")
+        .attr("d", areaUrinate);
 
-	svg.selectAll("dot")
-	    .data(data)
-	  .enter().append("circle")
-	  	.attr('stroke', '#417FC9')
-	  	.attr('fill', '#417FC9')
-	  	.attr('opacity', '.7')
-	    .attr("r", function(d) {return d.urinate;})
-	    .attr("cx", function(d) { return x(d.date); })
-	    .attr("cy", function(d) { return y(d.urinate); })
-	    .on("mouseover", function(d) {
-			div.html(formatTime(d.date) + ", 嘘嘘: "  + d.urinate + "次")
-			.style("left", (d3.event.pageX) + "px")
-			.style("top", (d3.event.pageY - 28) + "px")
-			.style("opacity", .9)
-			.style("background", "#417FC9");
-		})
-		.on("mouseout", function(d) { 
-			div.style("opacity", 0);
-		});
-
-	svg.selectAll("dot")
-	    .data(data)
-	  .enter().append("rect")
-	  	.attr('stroke', '#947A5E')
-	  	.attr('fill', '#947A5E')
-	  	.attr('opacity', '.7')
-	  	.attr('width', function(d) {return 1.5 * d.stool;})
-	  	.attr('height', function(d) {return 1.5 * d.stool;})
-	    .attr("x", function(d) { return x(d.date); })
-	    .attr("y", function(d) { return y(d.stool); })
-	    .on("mouseover", function(d) {
-			div.html(formatTime(d.date) + ", 便便: "  + d.stool + "次")
-			.style("left", (d3.event.pageX) + "px")
-			.style("top", (d3.event.pageY - 28) + "px")
-			.style("opacity", .9)
-			.style("background", "#947A5E");
-		})
-		.on("mouseout", function(d) { 
-			div.style("opacity", 0);
-		});;
-
-	// svg.append("path")
-	// 	.attr("class", "urinate")
-	// 	.attr("d", valueline(data));
+	svg.append("path")
+		.attr("class", "urinate")
+		.attr("d", urinateline(data));
 	
-	// svg.append("path")
-	// 	.attr("class", "stool")
-	// 	.attr("d", stoolline(data));
+
+	svg.append("path")
+        .datum(data)
+        .attr("class", "areaStool")
+        .attr("d", areaStool);
+	
+	svg.append("path")
+		.attr("class", "stool")
+		.attr("d", stoolline(data));
 
 });

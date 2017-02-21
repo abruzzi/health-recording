@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="html">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+    .axis text {
+      font: 10px sans-serif;
+    }
+
+    .axis line,
+    .axis path {
+      fill: none;
+      stroke: #000;
+    }
+
+    .chart {
+      height:300px;
+      width:80px;
+      background:   #E4E4E4;
+      display: inline-block;
+    }
+
+    .bar {
+      fill: steelblue;
+      opacity: .5;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>D3 time block charts w/ 24 hour y-axis</h3>
+        <div class="oneNorth chart"> 
+        </div>
+        <div class="oneSouth chart"> 
+        </div>          
+      </div>
+  
+    </div>
+
+  </div>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+//data for each chart is an array of objects, each with startHour and endHour as an integer
+var oneNorthData = [
+  {
+    startHour: 6,
+    endHour: 10
+  },
+  {
+    startHour: 14,
+    endHour: 17
+  },
+  {
+    startHour: 7,
+    endHour: 11
+  },
+  {
+    startHour: 0,
+    endHour: 1
+  },
+  {
+    startHour: 8,
+    endHour: 9
+  }
+]
+
+drawChart(d3.select(".oneNorth"), oneNorthData)
+
+var twoNorthData = [
+  {
+    startHour: 7,
+    endHour: 9
+  },
+  {
+    startHour: 15,
+    endHour: 18
+  }
+]
+
+drawChart(d3.select(".oneSouth"), twoNorthData)
+
+//render a new svg chart in the specified div using the data passed in
+function drawChart(element, data) {
+
+  //setup dimensions based on size of container element
+  var margin = {top: 10, right: 10, bottom: 10, left: 30},
+      elementWidth = parseInt(element.style("width")),
+      elementHeight = parseInt(element.style("height")),
+      width = elementWidth - margin.left - margin.right,
+      height = elementHeight - margin.top - margin.bottom;
+
+  //linear 24 hour scale
+  var y = d3.scale.linear()
+      .domain([24,0])
+      .range([height,0]);
+
+  //vertical axis
+  var yAxis = d3.svg.axis()
+      .orient("right")
+      .ticks(24)
+      .scale(y)
+
+  //calculate distance between ticks, for use in drawing the bars on the chart
+  //from http://stackoverflow.com/questions/17221755/is-it-possible-to-find-the-distance-between-ticks-in-d3-js
+  tickArray = y.ticks(24),
+  tickDistance = y(tickArray[tickArray.length - 1]) - y(tickArray[tickArray.length - 2]);
+
+  //create the svg
+  var svg = element.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+
+  //draw the axis
+  svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    .call(yAxis)
+    //move text to the left of the axis
+    .selectAll("text")
+    .attr("transform", "translate(-25,0)")
+
+  //draw the bars, offset y and bar height based on data
+  svg.selectAll(".bar")
+    .data(data)  
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", margin.left + 20)  
+    .attr("width", tickDistance)
+    .attr("y", function(d) { 
+      return y(d.startHour) + margin.top; 
+    })
+    .attr("height", function(d) {
+      var offset = d.endHour - d.startHour;
+      return offset * tickDistance;
+    });
+}
+
+
+</script>
+</body>
+</html> 

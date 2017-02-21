@@ -14,13 +14,13 @@ body { font: 12px Arial;}
 }
 
 .urinate {
-	stroke: #417FC9;
+	stroke: #31A354;
 	stroke-width: 1.5;
 	fill: none;
 }
 
 .stool {
-	stroke: #947A5E;
+	stroke: #636363;
 	stroke-width: 1.5;
 	fill: none;
 }
@@ -36,8 +36,26 @@ div.tooltip {
 	height: 20px;
 	padding: 2px;
 	font: 12px Arial;
-	background: #417FC9;
+	background: #31A354;
 	color: white;
 	border: 0px;
 	pointer-events: none;
+}
+
+.areaUrinate {
+	fill: #31A354;
+	stroke-width: 0;
+	opacity: .7;
+}
+
+.areaStool {
+	fill: #636363;
+	stroke-width: 0;
+	opacity: .7;
+}
+
+.bar {
+	fill: #31A354;
+	stroke-width: 0;
+	opacity: .7;	
 }
