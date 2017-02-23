@@ -66,22 +66,14 @@ d3.csv('data/sleeping_data.csv', function(err, sleep) {
       .duration(300)
       .attrTween("d", arc2Tween);
 
+  var level = d3.scale.threshold()
+    .domain([60, 120, 180, 240, 300])
+    .range(["low", "fine", "medium", "good", "great", "prefect"]);
+
     redArcs.enter().append("svg:path")
       // .attr("class", "red-path")
       .attr("class", function(d) {
-        if(d.length < 60) {
-          return "low bar";
-        } else if(d.length >= 60 && d.length < 120) {
-          return "fine bar";
-        } else if(d.length >= 120 && d.length < 180) {
-          return "medium bar";
-        } else if(d.length >= 180 && d.length < 240) {
-          return "good bar";
-        } else if(d.length >= 240 && d.length < 300) {
-          return "great bar";
-        } else {
-          return "prefect bar";
-        }
+        return level(d.length)+" bar";
       })
       .attr("transform", redTranslate)
       .attr("d", drawArc)
