@@ -1,5 +1,8 @@
 body { font: 12px Arial;}
 
+body {
+	background: #222222;
+}
 .container {
 	min-width: 800px;
 	max-width: 1200px;
@@ -34,6 +37,19 @@ div.tooltip {
 	text-align: center;
 	width: 160px;
 	height: 20px;
+	padding: 2px;
+	font: 12px Arial;
+	background: #31A354;
+	color: white;
+	border: 0px;
+	pointer-events: none;
+}
+
+div.sleep-tooltip {
+	position: absolute;
+	text-align: center;
+	width: 160px;
+	height: 40px;
 	padding: 2px;
 	font: 12px Arial;
 	background: #31A354;
