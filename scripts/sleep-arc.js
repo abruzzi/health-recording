@@ -1,6 +1,6 @@
 var parseDate = d3.time.format("%Y/%m/%d %H:%M").parse;
 
-d3.csv('data/sleeping_data.csv', function(err, sleep) {
+d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
   sleep.forEach(function(d) {
     d.date = parseDate(d.date);
     d.length = +d.length;
@@ -66,12 +66,18 @@ d3.csv('data/sleeping_data.csv', function(err, sleep) {
       .duration(300)
       .attrTween("d", arc2Tween);
 
+  var tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "sleep-tooltip")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .text("");
+
   var level = d3.scale.threshold()
     .domain([60, 120, 180, 240, 300])
     .range(["low", "fine", "medium", "good", "great", "prefect"]);
 
     redArcs.enter().append("svg:path")
-      // .attr("class", "red-path")
       .attr("class", function(d) {
         return level(d.length)+" bar";
       })
@@ -79,13 +85,27 @@ d3.csv('data/sleeping_data.csv', function(err, sleep) {
       .attr("d", drawArc)
       .each(function(d) {
         this._current = d;
+      })
+      .on("mouseover", function(d) {
+        tooltip.style("visibility", "visible")
+        d3.select(this).style("opacity", "1");
+      })
+      .on("mousemove", function(d){
+        tooltip.html(moment(d.date).format("YYYY-MM-DD HH:MM") + ", 睡了" + d.length + "分钟");
+        return tooltip
+          .style("top", (d3.event.pageY-10)+"px")
+          .style("left",(d3.event.pageX+10)+"px");
+      })
+      .on("mouseout", function(d) {
+        tooltip.style("visibility", "hidden")
+        d3.select(this).style("opacity", ".7");
       });
 
       d3.select("svg").append("circle")
         .attr("class", 'click-circle')
         .attr("transform", redTranslate)
         .attr("r", 50 * 0.85)
-        .attr("fill", "#05C3DE");
+        .attr("fill", "#FEFE8B");
 
   };
 

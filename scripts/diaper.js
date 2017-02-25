@@ -13,10 +13,10 @@ var x = d3.time.scale().range([0, width]);
 var y = d3.scale.linear().range([height, 0]);
 
 var xAxis = d3.svg.axis().scale(x)
-	.orient("bottom")
-	.innerTickSize(-height)
-    .outerTickSize(0)
-    .tickPadding(10);
+	.orient("bottom");
+	// .innerTickSize(-height)
+ //    .outerTickSize(0)
+ //    .tickPadding(10);
 
 var yAxis = d3.svg.axis().scale(y)
 	.orient("left")
@@ -139,7 +139,7 @@ d3.csv("/data/diaper_normolized.csv", function(error, data) {
 		})
 		.on("mouseout", function(d) { 
 			div.style("opacity", 0);
-		});;
+		});
 
 	// svg.append("path")
 	// 	.attr("class", "urinate")
