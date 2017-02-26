@@ -125,51 +125,6 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
         .attr("r", 50 * 0.85)
         .attr("fill", "#FEFE8B");
 
-
-  var radians = Math.PI/180, 
-    clockRadius = 50 + arcWidth * keys.length + 20,
-    hourTickStart = clockRadius,
-    hourTickLength = -15,
-    hourLabelRadius = clockRadius + 24,
-    hourLabelYOffset = 7;
-
-  var hourScale = d3.scale.linear()
-    .range([0,345])
-    .domain([0,23]);
-
-
-  var face = vis.append('g')
-    .attr('id', 'clock-face')
-    .attr('transform', translate);
-
-  face.selectAll('.hour-tick')
-    .data(d3.range(0, 24)).enter()
-      .append('line')
-      .attr('class', 'hour-tick')
-      .attr('x1',0)
-      .attr('x2',0)
-      .attr('y1',hourTickStart)
-      .attr('y2',hourTickStart + hourTickLength)
-      .attr('transform',function(d){
-        return 'rotate(' + hourScale(d) + ')';
-      });
-
-  face.selectAll('.hour-label')
-    .data(d3.range(6, 25, 6))
-      .enter()
-      .append('text')
-      .attr('class', 'hour-label')
-      .attr('text-anchor','middle')
-      .attr('x',function(d){
-        return hourLabelRadius*Math.sin(hourScale(d)*radians);
-      })
-      .attr('y',function(d){
-        return -hourLabelRadius*Math.cos(hourScale(d)*radians) + hourLabelYOffset;
-      })
-      .text(function(d){
-        return d;
-      });
-
   var legendWidth = 300;
 
   var legendsvg = vis.append("g")
