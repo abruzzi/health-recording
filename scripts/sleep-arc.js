@@ -21,7 +21,7 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
   var width = 1200,
     height = 800;
 
-  var redTranslate = "translate(" + width/2 +"," + height/2 + ")";
+  var translate = "translate(" + width/2 +"," + height/2 + ")";
 
   d3.select(".chart").append("svg:svg")
     .attr("width", width)
@@ -31,7 +31,7 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
     vis = d3.select("svg");
 
     var arcMin = 50;
-    var arcWidth = 5;
+    var arcWidth = 3.2;
     var arcPad = 1;
 
     var drawArc = d3.svg.arc()
@@ -73,6 +73,24 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
       .style("visibility", "hidden")
       .text("");
 
+  var colorScale = d3.scale.linear()
+    .range(["#2c7bb6", "#00a6ca","#00ccbc","#90eb9d","#ffff8c","#f9d057"].reverse());
+
+  var defs = vis.append("defs");
+
+  var linearGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "100%")
+      .attr("y2", "0%");
+
+  linearGradient.selectAll("stop") 
+    .data( colorScale.range() )                  
+    .enter().append("stop")
+    .attr("offset", function(d,i) { return i/(colorScale.range().length-1); })
+    .attr("stop-color", function(d) { return d; });
+
   var level = d3.scale.threshold()
     .domain([60, 120, 180, 240, 300])
     .range(["low", "fine", "medium", "good", "great", "prefect"]);
@@ -81,7 +99,7 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
       .attr("class", function(d) {
         return level(d.length)+" bar";
       })
-      .attr("transform", redTranslate)
+      .attr("transform", translate)
       .attr("d", drawArc)
       .each(function(d) {
         this._current = d;
@@ -101,14 +119,98 @@ d3.csv('data/sleeping_data_refined.csv', function(err, sleep) {
         d3.select(this).style("opacity", ".7");
       });
 
-      d3.select("svg").append("circle")
+      var clock = d3.select("svg").append("circle")
         .attr("class", 'click-circle')
-        .attr("transform", redTranslate)
+        .attr("transform", translate)
         .attr("r", 50 * 0.85)
         .attr("fill", "#FEFE8B");
 
-  };
 
+  var radians = Math.PI/180, 
+    clockRadius = 50 + arcWidth * keys.length + 20,
+    hourTickStart = clockRadius,
+    hourTickLength = -15,
+    hourLabelRadius = clockRadius + 24,
+    hourLabelYOffset = 7;
+
+  var hourScale = d3.scale.linear()
+    .range([0,345])
+    .domain([0,23]);
+
+
+  var face = vis.append('g')
+    .attr('id', 'clock-face')
+    .attr('transform', translate);
+
+  face.selectAll('.hour-tick')
+    .data(d3.range(0, 24)).enter()
+      .append('line')
+      .attr('class', 'hour-tick')
+      .attr('x1',0)
+      .attr('x2',0)
+      .attr('y1',hourTickStart)
+      .attr('y2',hourTickStart + hourTickLength)
+      .attr('transform',function(d){
+        return 'rotate(' + hourScale(d) + ')';
+      });
+
+  face.selectAll('.hour-label')
+    .data(d3.range(6, 25, 6))
+      .enter()
+      .append('text')
+      .attr('class', 'hour-label')
+      .attr('text-anchor','middle')
+      .attr('x',function(d){
+        return hourLabelRadius*Math.sin(hourScale(d)*radians);
+      })
+      .attr('y',function(d){
+        return -hourLabelRadius*Math.cos(hourScale(d)*radians) + hourLabelYOffset;
+      })
+      .text(function(d){
+        return d;
+      });
+
+  var legendWidth = 300;
+
+  var legendsvg = vis.append("g")
+    .attr("class", "legendWrapper")
+    .attr("transform", "translate(" + (width/2+legendWidth) + "," + (height - 40) + ")");
+
+  //Draw the Rectangle
+  legendsvg.append("rect")
+    .attr("class", "legendRect")
+    .attr("x", -legendWidth/2)
+    .attr("y", 0)
+    .attr("width", legendWidth)
+    .attr("height", 3.5)
+    .style("fill", "url(#linear-gradient)");
+    
+  //Append title
+  legendsvg.append("text")
+    .attr("class", "legendTitle")
+    .attr("x", 0)
+    .attr("y", -10)
+    .style("text-anchor", "middle")
+    .text("Sleeping Minutes");
+
+  //Set scale for x-axis
+  var xScale = d3.scale.linear()
+     .range([-legendWidth/2, legendWidth/2])
+     .domain([ 0, d3.max(sleep, function(d) { return d.length; })] );
+
+  //Define x-axis
+  var xAxis = d3.svg.axis()
+      .orient("bottom")
+      .ticks(5)
+      .scale(xScale);
+
+  //Set up X axis
+  legendsvg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + (10) + ")")
+    .call(xAxis);
+
+  };
 
   var facts = crossfilter(sleep);
 

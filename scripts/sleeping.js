@@ -2,7 +2,7 @@ var margin = {
 	top: 20, left: 50, right: 20, bottom: 60
 };
 
-var width = 1200 - margin.left - margin.right;
+var width = 1000 - margin.left - margin.right;
 var height = 450 - margin.top - margin.bottom;
 
 // var xScale = d3.time.scale().range([0, width]);
@@ -87,6 +87,7 @@ d3.json('data/sleeping_data_refined.json', function(e, data) {
 		.append("rect")
 		.attr("class", "barbg")
 		.attr("x", function(d) {
+			//make sure the same date have the same x position
 			var m = getFirstInDomain(d.date);
 			return xScale(m);
 		})

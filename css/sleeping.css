@@ -1,0 +1,14 @@
+.axis path, .axis tick, .axis line {
+  fill: none;
+  stroke: none;
+}
+
+.hour-tick {
+	stroke-width: 1;
+	stroke: #888888;
+}
+/*
+.hour-label{
+	font-size: 12px;
+	stroke: #cccccc;
+}*/
